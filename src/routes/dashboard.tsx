@@ -265,29 +265,12 @@ function NotifItem({ unread, variant, title, body, time }: { unread?: boolean; v
 
 /* ============ HUB ============ */
 function HubSection() {
-  const [time, setTime] = useState("");
-  const [frame, setFrame] = useState(1281);
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [paused, setPaused] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   const keyRef = useRef(0);
 
-  useEffect(() => {
-    const fmt = () => {
-      const n = new Date();
-      const pad = (x: number) => String(x).padStart(2, "0");
-      setTime(`${n.getFullYear()}-${pad(n.getMonth() + 1)}-${pad(n.getDate())} ${n.toTimeString().split(" ")[0]}`);
-    };
-    fmt();
-    const t = setInterval(fmt, 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  useEffect(() => {
-    const t = setInterval(() => setFrame((f) => f + Math.floor(Math.random() * 3) + 1), 800);
-    return () => clearInterval(t);
-  }, []);
 
   useEffect(() => {
     const seed: LogEntry[] = [];
