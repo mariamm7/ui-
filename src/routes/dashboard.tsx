@@ -330,40 +330,8 @@ function HubSection() {
       </div>
 
       <div className="hub-grid">
-        <div className="feed-container">
-          <div className="card-header">
-            <div className="card-header-title">
-              <Icon><path d="M23 7l-7 5 7 5V7z" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></Icon>
-              <h3>CAM 01 — Zone A Entrance</h3>
-            </div>
-            <div className="feed-meta">
-              <span>FPS 24</span>
-              <span>Frame <strong>{frame.toLocaleString()}</strong></span>
-            </div>
-          </div>
-          <div className="camera-display">
-            <div className="camera-overlay-ui">
-              <span className="cam-label">PRIMARY FEED</span>
-              <span className="cam-timestamp">{time}</span>
-            </div>
-            <div className="camera-frame">
-              <div className="detection-box green" style={{ top: "22%", left: "14%", width: "22%", height: "58%" }}>
-                <span className="det-label">Person 01 · Compliant</span>
-              </div>
-              <div className="detection-box red" style={{ top: "18%", left: "56%", width: "24%", height: "62%" }}>
-                <span className="det-label">Person 02 · No Helmet</span>
-              </div>
-              <div className="cam-scoreboard">
-                <div className="sb-title">Active Violations</div>
-                <div className="sb-row"><span>Track #02 — No Helmet</span> <span className="sb-count">1</span></div>
-                <div className="sb-row"><span>Track #05 — No Gloves</span> <span className="sb-count">2</span></div>
-                <div className="sb-row"><span>Track #07 — No Vest</span> <span className="sb-count">1</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="sidebar-panels">
+
           <div className="report-panel">
             <div className="card-header">
               <div className="card-header-title">
