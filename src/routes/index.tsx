@@ -35,8 +35,8 @@ function LoginPage() {
     }, 800);
   };
 
-  const demoLogin = () => {
-    setUser({ name: "Demo User", email: "demo@safeguard.ai", role: "Site Supervisor", loggedIn: true });
+  const googleLogin = () => {
+    setUser({ name: "Google User", email: "user@gmail.com", role: "Site Supervisor", loggedIn: true });
     navigate({ to: "/dashboard" });
   };
 
@@ -51,10 +51,11 @@ function LoginPage() {
       heroTitle="Workplace safety, powered by intelligence."
       heroText="Real-time computer vision detects PPE compliance violations, generates audit trails, and delivers AI-driven safety insights for industrial environments."
       stats={[
-        { value: "99.2%", label: "Detection accuracy" },
-        { value: "< 50ms", label: "Inference latency" },
+        { value: "24/7", label: "Continuous monitoring" },
+        { value: "AI-Powered", label: "Smart safety insights" },
       ]}
     >
+
       <div className="auth-header">
         <h1>Welcome back</h1>
         <p>Sign in to access the PPE monitoring dashboard.</p>
