@@ -6,28 +6,28 @@
    ============================================================ */
 
 :root {
-  /* Brand */
-  --primary: #1D4ED8;
-  --primary-hover: #1E40AF;
-  --primary-soft: #EFF4FF;
-  --primary-soft-2: #DBE7FF;
-  --accent: #0EA5E9;
+  /* Brand — soft light blue */
+  --primary: #3B82F6;
+  --primary-hover: #2563EB;
+  --primary-soft: #EFF6FF;
+  --primary-soft-2: #DBEAFE;
+  --accent: #7DD3FC;
 
   /* Surfaces */
-  --bg-app: #F7F9FC;
+  --bg-app: #F0F7FF;
   --bg-surface: #FFFFFF;
-  --bg-subtle: #F1F5F9;
-  --bg-hover: #F8FAFC;
+  --bg-subtle: #E0F2FE;
+  --bg-hover: #F0F9FF;
 
   /* Text */
-  --text-primary: #0F172A;
-  --text-secondary: #334155;
+  --text-primary: #0C2A4D;
+  --text-secondary: #334E6C;
   --text-muted: #64748B;
   --text-light: #94A3B8;
 
   /* Borders */
-  --border: #E2E8F0;
-  --border-strong: #CBD5E1;
+  --border: #DBEAFE;
+  --border-strong: #BFDBFE;
   --border-focus: #93C5FD;
 
   /* Status */
