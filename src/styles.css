@@ -424,7 +424,7 @@ a:hover { color: var(--primary-hover); }
 .form-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 select.form-input {
@@ -763,7 +763,7 @@ select.form-input {
 .header-search:focus-within {
   background: var(--bg-surface);
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .header-search .icon {
@@ -1104,7 +1104,7 @@ select.form-input {
   height: 100%;
   position: relative;
   background:
-    radial-gradient(circle at 30% 40%, rgba(29, 78, 216, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 30% 40%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
     radial-gradient(circle at 70% 60%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
     #0F172A;
   overflow: hidden;
@@ -1416,7 +1416,7 @@ select.form-input {
 .filter-group select:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .date-range {
@@ -1877,12 +1877,12 @@ input[type="range"]::-webkit-slider-thumb {
   background: var(--primary);
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.15);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
   transition: box-shadow var(--timing);
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  box-shadow: 0 0 0 6px rgba(29, 78, 216, 0.2);
+  box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.2);
 }
 
 .settings-divider {
