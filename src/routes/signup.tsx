@@ -43,15 +43,15 @@ function SignupPage() {
     <AuthLayout
       heroBadge={
         <>
-          <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+          <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             <path d="M9 12l2 2 4-4" />
           </svg>
           Authorized access only
         </>
       }
-      heroTitle="Unified safety compliance, end to end."
-      heroText="Join safety professionals using SafeGuard AI to maintain zero-incident environments through intelligent PPE monitoring and automated reporting."
+      heroTitle="Safety compliance, automated and intelligent."
+      heroText="Join safety professionals using SafeGuard AI to maintain zero-incident environments through intelligent PPE monitoring and real-time compliance tracking."
       stats={[
         { value: "24/7", label: "Operational coverage" },
         { value: "Real-time", label: "Alert system" },
@@ -129,12 +129,12 @@ function SignupPage() {
           <label className="checkbox-label" style={{ alignItems: "flex-start", gap: 10 }}>
             <input type="checkbox" style={{ marginTop: 2 }} checked={terms} onChange={(e) => setTerms(e.target.checked)} />
             <span style={{ fontSize: "0.82rem" }}>
-              I agree to the <a href="#" className="auth-link">Data Privacy Agreement</a> and acknowledge that all monitoring logs are property of the enterprise.
+              I agree to the <a href="#" className="auth-link" style={{ color: "#1e3a5f", fontWeight: 600 }}>Data Privacy Agreement</a> and acknowledge that all monitoring logs are property of the enterprise.
             </span>
           </label>
         </div>
 
-        <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+        <button type="submit" className="btn btn-primary btn-block" style={{ background: "#1e3a5f", borderColor: "#1e3a5f" }} disabled={loading}>
           {loading ? (
             <><span className="spinner" /> Creating account…</>
           ) : (
@@ -149,7 +149,7 @@ function SignupPage() {
       </form>
 
       <p className="auth-footer">
-        Already authorized? <Link to="/" className="auth-link">Sign in</Link>
+        Already authorized? <Link to="/" className="auth-link" style={{ color: "#1e3a5f", fontWeight: 600 }}>Sign in</Link>
       </p>
     </AuthLayout>
   );
