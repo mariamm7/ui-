@@ -50,12 +50,8 @@ function SignupPage() {
           Authorized access only
         </>
       }
-      heroTitle="Safety compliance, automated and intelligent."
-      heroText="Join safety professionals using SafeGuard AI to maintain zero-incident environments through intelligent PPE monitoring and real-time compliance tracking."
-      stats={[
-        { value: "24/7", label: "Operational coverage" },
-        { value: "Real-time", label: "Alert system" },
-      ]}
+     heroTitle="Intelligent PPE compliance monitoring."
+     heroText="Real-time detection and automated audit trails for industrial and construction safety teams."
     >
       <div className="auth-header">
         <h1>Request operator access</h1>
