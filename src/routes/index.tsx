@@ -42,8 +42,19 @@ function LoginPage() {
 
   return (
     <AuthLayout
-      heroTitle="WORKPLACE SAFETY"
-      heroText="Real-time detection and automated audit trails for safety of industrial and construction environments."
+  heroBadge={
+    <>
+      <span className="pulse-dot" />
+      Authorized personnel only
+    </>
+  }
+  heroTitle="Workplace safety, automated."
+  heroText="Real-time detection and automated audit trails for safety of industrial and construction environments."
+  stats={[
+    { value: "24/7", label: "Continuous monitoring" },
+    { value: "AI", label: "Powered detection" },
+  ]}
+>
     >
 
       <div className="auth-header">
