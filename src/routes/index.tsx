@@ -42,7 +42,7 @@ function LoginPage() {
 
   return (
     <AuthLayout
-  heroTitle="Workplace safety, automated."
+  heroTitle="WORKPLACE SAFETY"
   heroText="Real-time detection and automated audit trails for safety of industrial and construction environments."
     >
 
