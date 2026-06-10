@@ -406,17 +406,10 @@ function OverviewSection({ goAnalytics, goReports }: { goAnalytics: () => void; 
 
   return (
     <>
-      <div className="stats-grid">
-        <StatCard color="success" value="87.5%" label="Compliance Rate" sub="↑ 2.1% this week" icon={<svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" /></svg>} />
-        <StatCard color="danger" value="24" label="Violations Today" sub="↓ 12% vs yesterday" icon={<svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>} />
-        <StatCard color="info" value="8" label="Active Personnel" sub="2 added this shift" icon={<svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>} />
-        <StatCard color="primary" value="2 / 2" label="Cameras Online" sub="All zones covered" icon={<svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="M23 7l-7 5 7 5V7z" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>} />
-      </div>
-
-      <div className="hub-grid">
-        {/* Camera feed */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 24 }}>
+        {/* Live Camera Feed */}
         <div className="feed-container">
-          <div className="card-header">
+          <div className="card-header" style={{ justifyContent: "space-between", alignItems: "center" }}>
             <div className="card-header-title">
               <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M23 7l-7 5 7 5V7z" />
@@ -424,12 +417,21 @@ function OverviewSection({ goAnalytics, goReports }: { goAnalytics: () => void; 
               </svg>
               <h3>Live Camera — Zone A</h3>
             </div>
-            <div className="feed-meta">
-              <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span className="live-dot" />
-                <span style={{ fontSize: "0.72rem", fontWeight: 600, color: "var(--danger)" }}>Recording</span>
-              </span>
-              <span>1080p · 30 fps</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div className="feed-meta">
+                <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span className="live-dot" />
+                  <span style={{ fontSize: "0.72rem", fontWeight: 600, color: "var(--danger)" }}>Recording</span>
+                </span>
+                <span>1080p · 30 fps</span>
+              </div>
+              <button className="btn btn-primary" style={{ whiteSpace: "nowrap", padding: "8px 16px" }} onClick={() => alert("Opening camera connection dialog...")}>
+                <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6 }}>
+                  <path d="M12 5v14" />
+                  <path d="M19 12H5" />
+                </svg>
+                Connect
+              </button>
             </div>
           </div>
           <div className="camera-display">
@@ -463,53 +465,52 @@ function OverviewSection({ goAnalytics, goReports }: { goAnalytics: () => void; 
           </div>
         </div>
 
-        {/* Right panel */}
-        <div className="sidebar-panels">
-          <div className="overview-cta-row">
-            <button className="overview-cta-btn cta-analytics" onClick={goAnalytics}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="20" x2="18" y2="10" />
-                <line x1="12" y1="20" x2="12" y2="4" />
-                <line x1="6" y1="20" x2="6" y2="14" />
-                <path d="M2 20h20" />
+        {/* Recent Activity */}
+        <div className="activity-panel">
+          <div className="card-header">
+            <div className="card-header-title">
+              <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
               </svg>
-              <div>
-                <strong>View Analytics</strong>
-                <span>Charts &amp; trends</span>
-              </div>
-            </button>
-            <button className="overview-cta-btn cta-reports" onClick={goReports}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-              </svg>
-              <div>
-                <strong>Generate Report</strong>
-                <span>Compliance audit</span>
-              </div>
+              <h3>Recent Activity</h3>
+            </div>
+            <button className="btn-ghost" style={{ padding: "4px 10px", fontSize: "0.72rem" }} onClick={() => setPaused((p) => !p)}>
+              {paused ? "▶ Resume" : "⏸ Pause"}
             </button>
           </div>
-
-          <div className="activity-panel">
-            <div className="card-header">
-              <div className="card-header-title">
-                <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-                <h3>Recent Activity</h3>
-              </div>
-              <button className="btn-ghost" style={{ padding: "4px 10px", fontSize: "0.72rem" }} onClick={() => setPaused((p) => !p)}>
-                {paused ? "▶ Resume" : "⏸ Pause"}
-              </button>
-            </div>
-            <div className="activity-feed">
-              {activity.map((ev) => (
-                <ActivityItem key={ev.key} event={ev} />
-              ))}
-            </div>
+          <div className="activity-feed">
+            {activity.map((ev) => (
+              <ActivityItem key={ev.key} event={ev} />
+            ))}
           </div>
         </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <button className="overview-cta-btn cta-analytics" onClick={goAnalytics} style={{ padding: 20, height: "auto" }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+            <path d="M2 20h20" />
+          </svg>
+          <div>
+            <strong>View Analytics</strong>
+            <span>Charts &amp; trends</span>
+          </div>
+        </button>
+        <button className="overview-cta-btn cta-reports" onClick={goReports} style={{ padding: 20, height: "auto" }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
+          <div>
+            <strong>Generate Report</strong>
+            <span>Compliance audit</span>
+          </div>
+        </button>
       </div>
     </>
   );
@@ -534,23 +535,6 @@ function ActivityItem({ event }: { event: ActivityEvent }) {
         <p className="activity-msg">{event.msg}</p>
       </div>
       <span className="activity-time">{event.time}</span>
-    </div>
-  );
-}
-
-function StatCard({ color, value, label, sub, icon }: { color: string; value: string; label: string; sub: string; icon: React.ReactNode }) {
-  return (
-    <div className="stat-card">
-      <div className="stat-icon" style={{ background: `var(--${color}-soft)`, color: `var(--${color})` }}>
-        {icon}
-      </div>
-      <div className="stat-content">
-        <span className="stat-value">{value}</span>
-        <span className="stat-label">{label}</span>
-        <span className="stat-delta" style={{ color: "var(--text-muted)", fontSize: "0.72rem", marginTop: 3, display: "block" }}>
-          {sub}
-        </span>
-      </div>
     </div>
   );
 }
