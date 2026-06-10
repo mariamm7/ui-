@@ -8,7 +8,7 @@ interface Props {
   heroBadge?: ReactNode;  // add the ?
   heroTitle: string;
   heroText: string;
-  stats: { value: string; label: string }[];
+  stats?: { value: string; label: string }[];
 }
 
 export function AuthLayout({ children, heroBadge, heroTitle, heroText, stats }: Props) {
@@ -28,12 +28,16 @@ export function AuthLayout({ children, heroBadge, heroTitle, heroText, stats }: 
             {heroBadge && <div className="hero-badge">{heroBadge}</div>}
             <h1>{heroTitle}</h1>
             <p>{heroText}</p>
-            <div className="hero-stats">
-              {stats.map((s) => (
-                <div key={s.label} className="hero-stat-item">
-                  <h3>{s.value}</h3>
-                  <p>{s.label}</p>
-                </div>
+{stats && (
+  <div className="hero-stats">
+    {stats.map((s) => (
+      <div key={s.label} className="hero-stat-item">
+        <h3>{s.value}</h3>
+        <p>{s.label}</p>
+      </div>
+    ))}
+  </div>
+)}
               ))}
             </div>
           </div>
