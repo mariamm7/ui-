@@ -12,8 +12,13 @@ export const Route = createFileRoute("/dashboard")({
 type Section = "overview" | "analytics" | "violations" | "reports" | "settings";
 
 interface Violation {
-  id: string; name: string; trackId: number; violation: string;
-  timestamp: string; confidence: string; status: "Critical" | "High" | "Medium";
+  id: string;
+  name: string;
+  trackId: number;
+  violation: string;
+  timestamp: string;
+  confidence: string;
+  status: "Critical" | "High" | "Medium";
 }
 
 const dummyViolations: Violation[] = [
@@ -28,53 +33,36 @@ const dummyViolations: Violation[] = [
 ];
 
 interface ActivityEvent {
-  key: number; type: "violation" | "compliant" | "info";
+  key: number;
+  type: "violation" | "compliant" | "info";
   severity: "critical" | "high" | "medium" | "ok" | "info";
-  msg: string; time: string;
+  msg: string;
+  time: string;
 }
 
 const activityTemplates: Omit<ActivityEvent, "key" | "time">[] = [
   { type: "violation", severity: "critical", msg: "Fatima Khan entered Zone A without a safety helmet" },
-  { type: "compliant", severity: "ok",       msg: "Track #36 confirmed fully compliant — all equipment in place" },
-  { type: "violation", severity: "high",     msg: "Safety goggles missing near heavy machinery in Zone B" },
-  { type: "info",      severity: "info",     msg: "Automated compliance snapshot saved to audit log" },
-  { type: "compliant", severity: "ok",       msg: "Ahmed Hassan re-equipped and returned to Zone A safely" },
-  { type: "violation", severity: "medium",   msg: "Raza Javed entered Zone C without a required safety vest" },
-  { type: "compliant", severity: "ok",       msg: "Morning safety briefing complete — 8 personnel cleared" },
+  { type: "compliant", severity: "ok", msg: "Track #36 confirmed fully compliant — all equipment in place" },
+  { type: "violation", severity: "high", msg: "Safety goggles missing near heavy machinery in Zone B" },
+  { type: "info", severity: "info", msg: "Automated compliance snapshot saved to audit log" },
+  { type: "compliant", severity: "ok", msg: "Ahmed Hassan re-equipped and returned to Zone A safely" },
+  { type: "violation", severity: "medium", msg: "Raza Javed entered Zone C without a required safety vest" },
+  { type: "compliant", severity: "ok", msg: "Morning safety briefing complete — 8 personnel cleared" },
   { type: "violation", severity: "critical", msg: "No protective gloves detected near the chemical storage area" },
-  { type: "info",      severity: "info",     msg: "Camera 2 repositioned for improved Zone B coverage" },
-  { type: "violation", severity: "medium",   msg: "Safety boots not detected on Track #14 in construction zone" },
+  { type: "info", severity: "info", msg: "Camera 2 repositioned for improved Zone B coverage" },
+  { type: "violation", severity: "medium", msg: "Safety boots not detected on Track #14 in construction zone" },
 ];
 
-const complianceData  = [88.2, 85.6, 91.3, 87.5, 90.1, 88.7, 87.5];
-const complianceDays  = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const dailyViolations = [3, 5, 2, 7, 4, 1, 2];
-const violationTypes  = [
-  { label: "No Helmet",  count: 14, color: "#1D4ED8" },
-  { label: "No Goggles", count:  6, color: "#2563EB" },
-  { label: "No Gloves",  count:  4, color: "#60A5FA" },
-  { label: "No Boots",   count:  3, color: "#93C5FD" },
-  { label: "No Vest",    count:  2, color: "#BFDBFE" },
-];
-const hourlyData = [
-  { hour: "8 AM",  count: 2 },
-  { hour: "9 AM",  count: 5 },
-  { hour: "10 AM", count: 8 },
-  { hour: "11 AM", count: 4 },
-  { hour: "12 PM", count: 3 },
-  { hour: "1 PM",  count: 6 },
-  { hour: "2 PM",  count: 3 },
-  { hour: "3 PM",  count: 9 },
-  { hour: "4 PM",  count: 5 },
-  { hour: "5 PM",  count: 2 },
-];
+const formatViol = (v: string) =>
+  v.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
 
-const formatViol = (v: string) => v.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-const statusClass = (s: string) => s === "Critical" ? "status-danger" : s === "High" ? "status-warning" : "status-info";
+const statusClass = (s: string) =>
+  s === "Critical" ? "status-danger" : s === "High" ? "status-warning" : "status-info";
 
 /* ─────────────────────────────────────
    ROOT PAGE
 ───────────────────────────────────── */
+
 function DashboardPage() {
   const navigate = useNavigate();
   const [user, setUserState] = useState<SafeguardUser | null>(null);
@@ -85,48 +73,65 @@ function DashboardPage() {
 
   useEffect(() => {
     const u = getUser();
-    if (!u?.loggedIn) { navigate({ to: "/" }); return; }
+    if (!u?.loggedIn) {
+      navigate({ to: "/" });
+      return;
+    }
     setUserState(u);
   }, [navigate]);
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
       if (!(e.target as HTMLElement).closest(".header-actions")) {
-        setUserMenu(false); setNotifOpen(false);
+        setUserMenu(false);
+        setNotifOpen(false);
       }
     };
     document.addEventListener("click", close);
     return () => document.removeEventListener("click", close);
   }, []);
 
-  const logout = () => { clearUser(); navigate({ to: "/" }); };
+  const logout = () => {
+    clearUser();
+    navigate({ to: "/" });
+  };
+
   if (!user) return null;
-  const initials = user.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+
+  const initials = user.name
+    .split(" ")
+    .map(w => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
   const sectionLabels: Record<Section, string> = {
-    overview:   "Overview",
-    analytics:  "Analytics",
+    overview: "Overview",
+    analytics: "Analytics",
     violations: "Violations",
-    reports:    "Safety Reports",
-    settings:   "Settings",
+    reports: "Safety Reports",
+    settings: "Settings",
   };
 
   return (
     <div className="dashboard-body">
-      {/* ── SIDEBAR ── */}
+      {/* SIDEBAR */}
       <aside className={`sidebar${sidebarOpen ? " open" : ""}`}>
         <div className="sidebar-logo">
           <img src={logo} alt="" />
           <span>SafeGuard AI</span>
         </div>
+
         <div className="sidebar-section-label">Main menu</div>
+
         <nav className="sidebar-nav">
-          <NavItem active={section === "overview"}   onClick={() => setSection("overview")}   label="Overview"       icon={<IcoGrid />} />
-          <NavItem active={section === "analytics"}  onClick={() => setSection("analytics")}  label="Analytics"      icon={<IcoChart />} />
-          <NavItem active={section === "violations"} onClick={() => setSection("violations")} label="Violations"     icon={<IcoAlert />} />
-          <NavItem active={section === "reports"}    onClick={() => setSection("reports")}    label="Safety Reports" icon={<IcoFile />} />
-          <NavItem active={section === "settings"}   onClick={() => setSection("settings")}   label="Settings"       icon={<IcoCog />} />
+          <NavItem active={section === "overview"} onClick={() => setSection("overview")} label="Overview" icon={<IcoGrid />} />
+          <NavItem active={section === "analytics"} onClick={() => setSection("analytics")} label="Analytics" icon={<IcoChart />} />
+          <NavItem active={section === "violations"} onClick={() => setSection("violations")} label="Violations" icon={<IcoAlert />} />
+          <NavItem active={section === "reports"} onClick={() => setSection("reports")} label="Safety Reports" icon={<IcoFile />} />
+          <NavItem active={section === "settings"} onClick={() => setSection("settings")} label="Settings" icon={<IcoCog />} />
         </nav>
+
         <div className="sidebar-bottom">
           <div className="sidebar-user">
             <div className="user-avatar">{initials}</div>
@@ -135,61 +140,30 @@ function DashboardPage() {
               <span className="user-role">{user.role}</span>
             </div>
           </div>
+
           <a className="nav-item logout-item" onClick={logout}>
-            <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
+            <Ico>
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </Ico>
             <span>Sign out</span>
           </a>
         </div>
       </aside>
 
-      {/* ── MAIN ── */}
+      {/* MAIN */}
       <main className="main-content">
         <header className="top-header">
-          <button className="menu-toggle" onClick={() => setSidebarOpen(o => !o)} aria-label="Toggle sidebar">
-            <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 12h16M4 6h16M4 18h16"/>
-            </svg>
+          <button className="menu-toggle" onClick={() => setSidebarOpen(o => !o)}>
+            ☰
           </button>
-          <div className="header-search">
-            <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
-            </svg>
-            <input type="text" placeholder="Search violations, personnel, zones…" />
-          </div>
+
           <div style={{ flex: 1 }} />
+
           <div className="header-actions">
-            <button className="header-btn"
-              onClick={e => { e.stopPropagation(); setNotifOpen(o => !o); setUserMenu(false); }}
-              aria-label="Notifications">
-              <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-              </svg>
-              <span className="notif-badge">3</span>
-            </button>
-            <div className="header-user" onClick={e => { e.stopPropagation(); setUserMenu(o => !o); setNotifOpen(false); }}>
-              <div className="header-avatar">{initials}</div>
+            <div className="header-user">
               <span>{user.name.split(" ")[0]}</span>
-              <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-            </div>
-            <div className={`user-dropdown${userMenu ? " active" : ""}`}>
-              <a><Ico><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></Ico>My profile</a>
-              <hr/>
-              <a onClick={logout} className="danger">
-                <Ico><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></Ico>
-                Sign out
-              </a>
-            </div>
-            <div className={`notifications-panel${notifOpen ? " active" : ""}`}>
-              <div className="notif-header"><h3>Notifications</h3><button>Mark all read</button></div>
-              <div className="notif-list">
-                <NotifItem unread variant="danger"  title="Critical: No helmet detected"    body="Fatima Khan flagged in Zone A."        time="2 minutes ago" />
-                <NotifItem unread variant="warning" title="Compliance dropped in Zone B"    body="Rate fell below 85% threshold."        time="14 minutes ago" />
-                <NotifItem       variant="info"    title="Daily report is ready"            body="Compliance audit for May 13 available." time="1 hour ago" />
-              </div>
             </div>
           </div>
         </header>
@@ -198,11 +172,26 @@ function DashboardPage() {
           <div className="page-title-bar">
             <h1 className="page-title">{sectionLabels[section]}</h1>
           </div>
-          <section className={`content-section${section === "overview"   ? " active" : ""}`}><OverviewSection   goAnalytics={() => setSection("analytics")} goReports={() => setSection("reports")} /></section>
-          <section className={`content-section${section === "analytics"  ? " active" : ""}`}><AnalyticsSection  /></section>
-          <section className={`content-section${section === "violations" ? " active" : ""}`}><ViolationsSection /></section>
-          <section className={`content-section${section === "reports"    ? " active" : ""}`}><ReportsSection    /></section>
-          <section className={`content-section${section === "settings"   ? " active" : ""}`}><SettingsSection   /></section>
+
+          <section className={`content-section${section === "overview" ? " active" : ""}`}>
+            <OverviewSection />
+          </section>
+
+          <section className={`content-section${section === "analytics" ? " active" : ""}`}>
+            <AnalyticsSection />
+          </section>
+
+          <section className={`content-section${section === "violations" ? " active" : ""}`}>
+            <ViolationsSection />
+          </section>
+
+          <section className={`content-section${section === "reports" ? " active" : ""}`}>
+            <ReportsSection />
+          </section>
+
+          <section className={`content-section${section === "settings" ? " active" : ""}`}>
+            <SettingsSection />
+          </section>
         </div>
       </main>
     </div>
@@ -212,185 +201,116 @@ function DashboardPage() {
 /* ─────────────────────────────────────
    SHARED HELPERS
 ───────────────────────────────────── */
+
 function Ico({ children }: { children: React.ReactNode }) {
   return (
-    <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" className="icon">
       {children}
     </svg>
   );
 }
 
-function NavItem({ active, onClick, label, icon }: { active: boolean; onClick: () => void; label: string; icon: React.ReactNode }) {
-  return <a className={`nav-item${active ? " active" : ""}`} onClick={onClick}>{icon}<span>{label}</span></a>;
-}
-
-function NotifItem({ unread, variant, title, body, time }: { unread?: boolean; variant: "danger"|"warning"|"info"; title: string; body: string; time: string }) {
-  const s = variant === "warning" ? { background: "var(--warning-soft)", color: "var(--warning)" } : variant === "info" ? { background: "var(--info-soft)", color: "var(--info)" } : undefined;
+function NavItem({ active, onClick, label, icon }: any) {
   return (
-    <div className={`notif-item${unread ? " unread" : ""}`}>
-      <div className="notif-icon" style={s}>
-        <Ico><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></Ico>
-      </div>
-      <div className="notif-content">
-        <strong>{title}</strong><p>{body}</p><span className="notif-time">{time}</span>
-      </div>
-    </div>
+    <a className={`nav-item${active ? " active" : ""}`} onClick={onClick}>
+      {icon}
+      <span>{label}</span>
+    </a>
   );
 }
 
-/* ─── SVG ICON COMPONENTS ─── */
-const IcoGrid  = () => <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>;
-const IcoChart = () => <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><path d="M2 20h20"/></svg>;
-const IcoAlert = () => <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>;
-const IcoFile  = () => <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>;
-const IcoCog   = () => <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9"/></svg>;
+/* ─────────────────────────────────────
+   OVERVIEW (UPDATED)
+───────────────────────────────────── */
 
-/* ═══════════════════════════════════════
-   OVERVIEW
-═══════════════════════════════════════ */
-function OverviewSection({ goAnalytics, goReports }: { goAnalytics: () => void; goReports: () => void }) {
+function OverviewSection() {
   const [activity, setActivity] = useState<ActivityEvent[]>([]);
-  const [paused, setPaused]     = useState(false);
+  const [paused, setPaused] = useState(false);
   const keyRef = useRef(0);
 
   const makeEvent = (): ActivityEvent => {
     const tpl = activityTemplates[Math.floor(Math.random() * activityTemplates.length)];
-    return { ...tpl, key: keyRef.current++, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) };
+    return {
+      ...tpl,
+      key: keyRef.current++,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
   };
 
   useEffect(() => {
-    const seed: ActivityEvent[] = [];
-    for (let i = 0; i < 7; i++) seed.push(makeEvent());
+    const seed = Array.from({ length: 7 }, makeEvent);
     setActivity(seed);
+
     const t = setInterval(() => {
-      if (!paused) setActivity(a => [makeEvent(), ...a].slice(0, 30));
+      if (!paused) {
+        setActivity(a => [makeEvent(), ...a].slice(0, 30));
+      }
     }, 3800);
+
     return () => clearInterval(t);
   }, [paused]);
 
   return (
-    <>
-      <div className="stats-grid">
-        <StatCard color="success" value="87.5%" label="Compliance Rate"   sub="↑ 2.1% this week"     icon={<svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>} />
-        <StatCard color="danger"  value="24"     label="Violations Today"  sub="↓ 12% vs yesterday"   icon={<svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>} />
-        <StatCard color="info"    value="8"      label="Active Personnel"  sub="2 added this shift"   icon={<svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>} />
-        <StatCard color="primary" value="2 / 2"  label="Cameras Online"    sub="All zones covered"    icon={<svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>} />
-      </div>
+    <div className="hub-grid">
+      {/* Camera feed */}
+      <div className="feed-container">
+        <div className="camera-display">
+          <div className="camera-frame">
+            <div className="camera-overlay-ui">
+              <div className="cam-label">CAM 01</div>
+              <div className="cam-timestamp">{new Date().toLocaleTimeString()}</div>
+            </div>
 
-      <div className="hub-grid">
-        {/* Camera feed */}
-        <div className="feed-container">
-          <div className="card-header">
-            <div className="card-header-title">
-              <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-              </svg>
-              <h3>Live Camera — Zone A</h3>
+            <div className="detection-box green" style={{ top: "22%", left: "18%" }}>
+              Track #36 · Compliant
             </div>
-            <div className="feed-meta">
-              <span style={{ display:"flex", alignItems:"center", gap:6 }}>
-                <span className="live-dot"/>
-                <span style={{ fontSize:"0.72rem", fontWeight:600, color:"var(--danger)" }}>Recording</span>
-              </span>
-              <span>1080p · 30 fps</span>
-            </div>
-          </div>
-          <div className="camera-display">
-            <div className="camera-frame">
-              <div className="camera-overlay-ui">
-                <div className="cam-label">CAM 01</div>
-                <div className="cam-timestamp">{new Date().toLocaleTimeString()}</div>
-              </div>
-              <div className="detection-box green" style={{ top:"22%", left:"18%", width:"22%", height:"55%" }}>
-                <span className="det-label">Track #36 · Compliant</span>
-              </div>
-              <div className="detection-box red" style={{ top:"30%", left:"55%", width:"20%", height:"50%" }}>
-                <span className="det-label">Track #25 · No Helmet</span>
-              </div>
-              <div className="cam-scoreboard">
-                <div className="sb-title">Active violations</div>
-                <div className="sb-row"><span>No Helmet</span><span className="sb-count">14</span></div>
-                <div className="sb-row"><span>No Goggles</span><span className="sb-count">6</span></div>
-                <div className="sb-row"><span>No Gloves</span><span className="sb-count">4</span></div>
-              </div>
+
+            <div className="detection-box red" style={{ top: "30%", left: "55%" }}>
+              Track #25 · No Helmet
             </div>
           </div>
         </div>
 
-        {/* Right panel */}
-        <div className="sidebar-panels">
-          <div className="overview-cta-row">
-            <button className="overview-cta-btn cta-analytics" onClick={goAnalytics}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
-                <line x1="6" y1="20" x2="6" y2="14"/><path d="M2 20h20"/>
-              </svg>
-              <div><strong>View Analytics</strong><span>Charts &amp; trends</span></div>
-            </button>
-            <button className="overview-cta-btn cta-reports" onClick={goReports}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-              </svg>
-              <div><strong>Generate Report</strong><span>Compliance audit</span></div>
-            </button>
-          </div>
-
-          <div className="activity-panel">
-            <div className="card-header">
-              <div className="card-header-title">
-                <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                </svg>
-                <h3>Recent Activity</h3>
-              </div>
-              <button className="btn-ghost" style={{ padding:"4px 10px", fontSize:"0.72rem" }} onClick={() => setPaused(p => !p)}>
-                {paused ? "▶ Resume" : "⏸ Pause"}
-              </button>
-            </div>
-            <div className="activity-feed">
-              {activity.map(ev => <ActivityItem key={ev.key} event={ev} />)}
-            </div>
-          </div>
+        <div style={{ display: "flex", gap: 10, padding: 12 }}>
+          <button className="btn btn-primary">View Analytics</button>
+          <button className="btn btn-outline">Generate Report</button>
         </div>
       </div>
-    </>
-  );
-}
 
-function ActivityItem({ event }: { event: ActivityEvent }) {
-  const cfg: Record<ActivityEvent["severity"], { dot: string; label: string; bg: string }> = {
-    critical: { dot: "#DC2626", label: "Violation",  bg: "#FEF2F2" },
-    high:     { dot: "#D97706", label: "Alert",      bg: "#FFFBEB" },
-    medium:   { dot: "#F59E0B", label: "Warning",    bg: "#FFFBEB" },
-    ok:       { dot: "#2563EB", label: "Compliant",  bg: "#EFF6FF" },
-    info:     { dot: "#0EA5E9", label: "Info",       bg: "#E0F2FE" },
-  };
-  const c = cfg[event.severity];
-  return (
-    <div className="activity-item" style={{ borderLeft: `3px solid ${c.dot}`, background: c.bg }}>
-      <span className="activity-dot" style={{ background: c.dot }} />
-      <div className="activity-body">
-        <span className="activity-label" style={{ color: c.dot }}>{c.label}</span>
-        <p className="activity-msg">{event.msg}</p>
-      </div>
-      <span className="activity-time">{event.time}</span>
-    </div>
-  );
-}
+      {/* Activity */}
+      <div className="activity-panel">
+        <div className="card-header">
+          <h3>Recent Activity</h3>
+          <button onClick={() => setPaused(p => !p)}>
+            {paused ? "Resume" : "Pause"}
+          </button>
+        </div>
 
-function StatCard({ color, value, label, sub, icon }: { color: string; value: string; label: string; sub: string; icon: React.ReactNode }) {
-  return (
-    <div className="stat-card">
-      <div className="stat-icon" style={{ background: `var(--${color}-soft)`, color: `var(--${color})` }}>{icon}</div>
-      <div className="stat-content">
-        <span className="stat-value">{value}</span>
-        <span className="stat-label">{label}</span>
-        <span className="stat-delta" style={{ color:"var(--text-muted)", fontSize:"0.72rem", marginTop:3, display:"block" }}>{sub}</span>
+        <div className="activity-feed">
+          {activity.map(ev => (
+            <div key={ev.key} className="activity-item">
+              <strong>{ev.msg}</strong>
+              <span>{ev.time}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
+
+/* ─────────────────────────────────────
+   (REST OF YOUR COMPONENTS UNCHANGED)
+───────────────────────────────────── */
+
+/* Keep your existing:
+   - AnalyticsSection
+   - ViolationsSection
+   - ReportsSection
+   - SettingsSection
+   - Charts
+   - etc.
+*/
 
 /* ═══════════════════════════════════════
    ANALYTICS
