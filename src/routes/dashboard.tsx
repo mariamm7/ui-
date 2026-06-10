@@ -1,22 +1,15 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
-// Note: Replace these with your actual asset paths
-// import logo from "@/assets/logo.png";
-// import heroImg from "@/assets/login-hero.png";
-
-// Placeholder for missing images (remove when you have actual assets)
 const logo = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect fill='%234F46E5' width='40' height='40' rx='8'/%3E%3C/svg%3E";
 const heroImg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Crect fill='%23E5E7EB' width='800' height='600'/%3E%3C/svg%3E";
 
-// Auth types
 interface SafeguardUser {
   loggedIn: boolean;
   name: string;
   role: string;
 }
 
-// Mock auth functions
 const getUser = (): SafeguardUser | null => {
   const stored = localStorage.getItem("safeguard_user");
   return stored ? JSON.parse(stored) : null;
@@ -101,16 +94,12 @@ const hourlyData = [
 const formatViol = (v: string) => v.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 const statusClass = (s: string) => (s === "Critical" ? "status-danger" : s === "High" ? "status-warning" : "status-info");
 
-/* ─────────────────────────────────────
-   ROOT PAGE
-───────────────────────────────────── */
 function DashboardPage() {
   const navigate = useNavigate();
   const [user, setUserState] = useState<SafeguardUser | null>(null);
   const [section, setSection] = useState<Section>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
 
   useEffect(() => {
     const u = getUser();
@@ -126,7 +115,6 @@ function DashboardPage() {
       const target = e.target as HTMLElement;
       if (!target.closest(".header-actions")) {
         setUserMenu(false);
-        setNotifOpen(false);
       }
     };
     document.addEventListener("click", close);
@@ -190,7 +178,7 @@ function DashboardPage() {
         </div>
       </aside>
 
-      {/* ── MAIN ── */}
+      {/* MAIN */}
       <main className="main-content">
         <header className="top-header">
           <button className="menu-toggle" onClick={() => setSidebarOpen((o) => !o)} aria-label="Toggle sidebar">
@@ -200,27 +188,11 @@ function DashboardPage() {
           </button>
           <div style={{ flex: 1 }} />
           <div className="header-actions">
-            <button
-              className="header-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                setNotifOpen((o) => !o);
-                setUserMenu(false);
-              }}
-              aria-label="Notifications"
-            >
-              <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-              </svg>
-              <span className="notif-badge">3</span>
-            </button>
             <div
               className="header-user"
               onClick={(e) => {
                 e.stopPropagation();
                 setUserMenu((o) => !o);
-                setNotifOpen(false);
               }}
               role="button"
             >
@@ -247,17 +219,6 @@ function DashboardPage() {
                 </Ico>
                 Sign out
               </a>
-            </div>
-            <div className={`notifications-panel${notifOpen ? " active" : ""}`} style={{ background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: "6px", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}>
-              <div className="notif-header">
-                <h3>Notifications</h3>
-                <button>Mark all read</button>
-              </div>
-              <div className="notif-list">
-                <NotifItem unread variant="danger" title="Critical: No helmet detected" body="Fatima Khan flagged in Zone A." time="2 minutes ago" />
-                <NotifItem unread variant="warning" title="Compliance dropped in Zone B" body="Rate fell below 85% threshold." time="14 minutes ago" />
-                <NotifItem variant="info" title="Daily report is ready" body="Compliance audit for May 13 available." time="1 hour ago" />
-              </div>
             </div>
           </div>
         </header>
@@ -289,9 +250,6 @@ function DashboardPage() {
   );
 }
 
-/* ─────────────────────────────────────
-   SHARED HELPERS
-───────────────────────────────────── */
 function Ico({ children }: { children: React.ReactNode }) {
   return (
     <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -309,27 +267,6 @@ function NavItem({ active, onClick, label, icon }: { active: boolean; onClick: (
   );
 }
 
-function NotifItem({ unread, variant, title, body, time }: { unread?: boolean; variant: "danger" | "warning" | "info"; title: string; body: string; time: string }) {
-  const s = variant === "warning" ? { background: "#f0f4f8", color: "#2c5aa0" } : variant === "info" ? { background: "#f0f4f8", color: "#1e3a5f" } : { background: "#fef2f2", color: "#c41e3a" };
-  return (
-    <div className={`notif-item${unread ? " unread" : ""}`}>
-      <div className="notif-icon" style={s}>
-        <Ico>
-          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-          <path d="M12 9v4" />
-          <path d="M12 17h.01" />
-        </Ico>
-      </div>
-      <div className="notif-content">
-        <strong>{title}</strong>
-        <p>{body}</p>
-        <span className="notif-time">{time}</span>
-      </div>
-    </div>
-  );
-}
-
-/* ─── SVG ICON COMPONENTS ─── */
 const IcoGrid = () => (
   <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="3" width="7" height="7" rx="1.5" />
@@ -372,9 +309,6 @@ const IcoCog = () => (
   </svg>
 );
 
-/* ═══════════════════════════════════════
-   OVERVIEW
-═══════════════════════════════════════ */
 function OverviewSection({ goAnalytics, goReports }: { goAnalytics: () => void; goReports: () => void }) {
   const [activity, setActivity] = useState<ActivityEvent[]>([]);
   const [paused, setPaused] = useState(false);
@@ -402,7 +336,6 @@ function OverviewSection({ goAnalytics, goReports }: { goAnalytics: () => void; 
   return (
     <>
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24, marginBottom: 24 }}>
-        {/* Live Camera Feed */}
         <div className="feed-container">
           <div className="card-header" style={{ justifyContent: "space-between", alignItems: "center" }}>
             <div className="card-header-title">
@@ -442,24 +375,14 @@ function OverviewSection({ goAnalytics, goReports }: { goAnalytics: () => void; 
               </div>
               <div className="cam-scoreboard">
                 <div className="sb-title">Active violations</div>
-                <div className="sb-row">
-                  <span>No Helmet</span>
-                  <span className="sb-count">14</span>
-                </div>
-                <div className="sb-row">
-                  <span>No Goggles</span>
-                  <span className="sb-count">6</span>
-                </div>
-                <div className="sb-row">
-                  <span>No Gloves</span>
-                  <span className="sb-count">4</span>
-                </div>
+                <div className="sb-row"><span>No Helmet</span><span className="sb-count">14</span></div>
+                <div className="sb-row"><span>No Goggles</span><span className="sb-count">6</span></div>
+                <div className="sb-row"><span>No Gloves</span><span className="sb-count">4</span></div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Recent Activity */}
         <div className="activity-panel" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
           <div className="card-header">
             <div className="card-header-title">
@@ -497,9 +420,7 @@ function ActivityItem({ event }: { event: ActivityEvent }) {
     <div className="activity-item" style={{ borderLeft: `3px solid ${c.dot}`, background: c.bg }}>
       <span className="activity-dot" style={{ background: c.dot }} />
       <div className="activity-body">
-        <span className="activity-label" style={{ color: c.dot }}>
-          {c.label}
-        </span>
+        <span className="activity-label" style={{ color: c.dot }}>{c.label}</span>
         <p className="activity-msg">{event.msg}</p>
       </div>
       <span className="activity-time">{event.time}</span>
@@ -507,9 +428,6 @@ function ActivityItem({ event }: { event: ActivityEvent }) {
   );
 }
 
-/* ═══════════════════════════════════════
-   ANALYTICS
-═══════════════════════════════════════ */
 function AnalyticsSection() {
   const total = violationTypes.reduce((s, v) => s + v.count, 0);
   return (
@@ -517,8 +435,6 @@ function AnalyticsSection() {
       <p className="section-subtitle" style={{ marginBottom: 28 }}>
         Visual breakdown of safety compliance across zones, violation categories, and time trends.
       </p>
-
-      {/* Row 1: line + bar */}
       <div className="analytics-grid-top">
         <div className="chart-card">
           <div className="chart-card-header">
@@ -526,9 +442,7 @@ function AnalyticsSection() {
               <h3 className="chart-title">Compliance Rate</h3>
               <p className="chart-subtitle">Daily average over the past 7 days</p>
             </div>
-            <span className="chart-badge" style={{ background: "var(--success-soft)", color: "var(--success)" }}>
-              87.5% avg
-            </span>
+            <span className="chart-badge" style={{ background: "var(--success-soft)", color: "var(--success)" }}>87.5% avg</span>
           </div>
           <LineChart data={complianceData} labels={complianceDays} color="#2563EB" min={78} max={96} unit="%" />
           <div className="chart-legend-row">
@@ -540,22 +454,17 @@ function AnalyticsSection() {
             ))}
           </div>
         </div>
-
         <div className="chart-card">
           <div className="chart-card-header">
             <div>
               <h3 className="chart-title">Daily Violations</h3>
               <p className="chart-subtitle">Number of incidents per day this week</p>
             </div>
-            <span className="chart-badge" style={{ background: "var(--danger-soft)", color: "var(--danger)" }}>
-              24 today
-            </span>
+            <span className="chart-badge" style={{ background: "var(--danger-soft)", color: "var(--danger)" }}>24 today</span>
           </div>
           <BarChart data={dailyViolations} labels={complianceDays} color="#2563EB" />
         </div>
       </div>
-
-      {/* Row 2: donut + zone bars */}
       <div className="analytics-grid-bottom">
         <div className="chart-card">
           <div className="chart-card-header">
@@ -578,23 +487,18 @@ function AnalyticsSection() {
             </div>
           </div>
         </div>
-
         <div className="chart-card">
           <div className="chart-card-header">
             <div>
               <h3 className="chart-title">Violations by Hour</h3>
               <p className="chart-subtitle">When during the day violations occur most</p>
             </div>
-            <span className="chart-badge" style={{ background: "var(--primary-soft)", color: "var(--primary)" }}>
-              Peak: 3 PM
-            </span>
+            <span className="chart-badge" style={{ background: "var(--primary-soft)", color: "var(--primary)" }}>Peak: 3 PM</span>
           </div>
           <HourlyChart data={hourlyData} />
           <div className="zone-summary-cards">
             <div className="zone-summary-item">
-              <span className="zone-summary-val" style={{ color: "var(--danger)" }}>
-                3 PM
-              </span>
+              <span className="zone-summary-val" style={{ color: "var(--danger)" }}>3 PM</span>
               <span className="zone-summary-label">Peak hour</span>
             </div>
             <div className="zone-summary-item">
@@ -612,18 +516,12 @@ function AnalyticsSection() {
   );
 }
 
-/* ── Chart components ── */
 function LineChart({ data, labels, color, min, max, unit = "" }: { data: number[]; labels: string[]; color: string; min: number; max: number; unit?: string }) {
-  const W = 400;
-  const H = 130;
+  const W = 400; const H = 130;
   const pad = { t: 14, b: 28, l: 34, r: 10 };
-  const cW = W - pad.l - pad.r;
-  const cH = H - pad.t - pad.b;
+  const cW = W - pad.l - pad.r; const cH = H - pad.t - pad.b;
   const range = max - min;
-  const pts = data.map((d, i) => ({
-    x: pad.l + (i / (data.length - 1)) * cW,
-    y: pad.t + (1 - (d - min) / range) * cH,
-  }));
+  const pts = data.map((d, i) => ({ x: pad.l + (i / (data.length - 1)) * cW, y: pad.t + (1 - (d - min) / range) * cH }));
   const path = pts.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
   const area = `${path} L ${pts[pts.length - 1].x} ${H - pad.b} L ${pad.l} ${H - pad.b} Z`;
   const yTicks = [min, Math.round((min + max) / 2), max];
@@ -641,52 +539,34 @@ function LineChart({ data, labels, color, min, max, unit = "" }: { data: number[
         return (
           <g key={v}>
             <line x1={pad.l} y1={gy} x2={W - pad.r} y2={gy} stroke="#E2E8F0" strokeWidth="1" strokeDasharray="4 3" />
-            <text x={pad.l - 4} y={gy + 4} textAnchor="end" fontSize="9" fill="var(--text-muted)">
-              {v}
-              {unit}
-            </text>
+            <text x={pad.l - 4} y={gy + 4} textAnchor="end" fontSize="9" fill="var(--text-muted)">{v}{unit}</text>
           </g>
         );
       })}
       <path d={area} fill={`url(#lg${gid})`} />
       <path d={path} stroke={color} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      {pts.map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r="3.5" fill={color} stroke="white" strokeWidth="1.5" />
-      ))}
-      {labels.map((l, i) => (
-        <text key={l} x={pts[i].x} y={H - 5} textAnchor="middle" fontSize="9" fill="var(--text-muted)">
-          {l}
-        </text>
-      ))}
+      {pts.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r="3.5" fill={color} stroke="white" strokeWidth="1.5" />)}
+      {labels.map((l, i) => <text key={l} x={pts[i].x} y={H - 5} textAnchor="middle" fontSize="9" fill="var(--text-muted)">{l}</text>)}
     </svg>
   );
 }
 
 function BarChart({ data, labels, color }: { data: number[]; labels: string[]; color: string }) {
   const mx = Math.max(...data);
-  const W = 400;
-  const H = 130;
+  const W = 400; const H = 130;
   const pad = { t: 10, b: 28, l: 16, r: 12 };
-  const cW = W - pad.l - pad.r;
-  const cH = H - pad.t - pad.b;
-  const bW = cW / data.length;
-  const gap = bW * 0.28;
+  const cW = W - pad.l - pad.r; const cH = H - pad.t - pad.b;
+  const bW = cW / data.length; const gap = bW * 0.28;
   return (
     <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto" }}>
       {data.map((d, i) => {
-        const bH = (d / mx) * cH;
-        const bX = pad.l + i * bW + gap / 2;
-        const bY = pad.t + cH - bH;
+        const bH = (d / mx) * cH; const bX = pad.l + i * bW + gap / 2; const bY = pad.t + cH - bH;
         const isLast = i === data.length - 1;
         return (
           <g key={i}>
             <rect x={bX} y={bY} width={bW - gap} height={bH} rx="4" fill={isLast ? color : `${color}55`} />
-            <text x={bX + (bW - gap) / 2} y={bY - 4} textAnchor="middle" fontSize="9" fontWeight="600" fill={isLast ? color : "var(--text-muted)"}>
-              {d}
-            </text>
-            <text x={bX + (bW - gap) / 2} y={H - 5} textAnchor="middle" fontSize="9" fill="var(--text-muted)">
-              {labels[i]}
-            </text>
+            <text x={bX + (bW - gap) / 2} y={bY - 4} textAnchor="middle" fontSize="9" fontWeight="600" fill={isLast ? color : "var(--text-muted)"}>{d}</text>
+            <text x={bX + (bW - gap) / 2} y={H - 5} textAnchor="middle" fontSize="9" fill="var(--text-muted)">{labels[i]}</text>
           </g>
         );
       })}
@@ -705,17 +585,9 @@ function HourlyChart({ data }: { data: { hour: string; count: number }[] }) {
           <div key={d.hour} className="hourly-row">
             <span className="hourly-label">{d.hour}</span>
             <div className="hourly-track">
-              <div
-                className="hourly-fill"
-                style={{
-                  width: `${pct}%`,
-                  background: isPeak ? "linear-gradient(90deg, #1D4ED8, #DC2626)" : "linear-gradient(90deg, #2563EB, #60A5FA)",
-                }}
-              />
+              <div className="hourly-fill" style={{ width: `${pct}%`, background: isPeak ? "linear-gradient(90deg, #1D4ED8, #DC2626)" : "linear-gradient(90deg, #2563EB, #60A5FA)" }} />
             </div>
-            <span className="hourly-count" style={{ color: isPeak ? "#DC2626" : "var(--text-muted)" }}>
-              {d.count}
-            </span>
+            <span className="hourly-count" style={{ color: isPeak ? "#DC2626" : "var(--text-muted)" }}>{d.count}</span>
           </div>
         );
       })}
@@ -725,48 +597,27 @@ function HourlyChart({ data }: { data: { hour: string; count: number }[] }) {
 
 function DonutChart({ segments }: { segments: { label: string; value: number; color: string }[] }) {
   const total = segments.reduce((s, seg) => s + seg.value, 0);
-  const sz = 150;
-  const cx = 75;
-  const cy = 75;
-  const R = 56;
-  const ir = 36;
+  const sz = 150; const cx = 75; const cy = 75; const R = 56; const ir = 36;
   let angle = -90;
   const arcs = segments.map((seg) => {
-    const frac = seg.value / total;
-    const sA = angle;
-    const eA = angle + frac * 360;
-    angle = eA;
-    const sR = (sA * Math.PI) / 180;
-    const eR = (eA * Math.PI) / 180;
-    const x1 = cx + R * Math.cos(sR);
-    const y1 = cy + R * Math.sin(sR);
-    const x2 = cx + R * Math.cos(eR);
-    const y2 = cy + R * Math.sin(eR);
-    const xi1 = cx + ir * Math.cos(sR);
-    const yi1 = cy + ir * Math.sin(sR);
-    const xi2 = cx + ir * Math.cos(eR);
-    const yi2 = cy + ir * Math.sin(eR);
+    const frac = seg.value / total; const sA = angle; const eA = angle + frac * 360; angle = eA;
+    const sR = (sA * Math.PI) / 180; const eR = (eA * Math.PI) / 180;
+    const x1 = cx + R * Math.cos(sR); const y1 = cy + R * Math.sin(sR);
+    const x2 = cx + R * Math.cos(eR); const y2 = cy + R * Math.sin(eR);
+    const xi1 = cx + ir * Math.cos(sR); const yi1 = cy + ir * Math.sin(sR);
+    const xi2 = cx + ir * Math.cos(eR); const yi2 = cy + ir * Math.sin(eR);
     const lg = frac > 0.5 ? 1 : 0;
     return { d: `M${x1} ${y1} A${R} ${R} 0 ${lg} 1 ${x2} ${y2} L${xi2} ${yi2} A${ir} ${ir} 0 ${lg} 0 ${xi1} ${yi1}Z`, color: seg.color };
   });
   return (
     <svg viewBox={`0 0 ${sz} ${sz}`} style={{ width: 150, height: 150, flexShrink: 0 }}>
-      {arcs.map((a, i) => (
-        <path key={i} d={a.d} fill={a.color} />
-      ))}
-      <text x={cx} y={cy - 4} textAnchor="middle" fontSize="18" fontWeight="700" fill="var(--text-primary)">
-        {total}
-      </text>
-      <text x={cx} y={cy + 14} textAnchor="middle" fontSize="9" fill="var(--text-muted)">
-        violations
-      </text>
+      {arcs.map((a, i) => <path key={i} d={a.d} fill={a.color} />)}
+      <text x={cx} y={cy - 4} textAnchor="middle" fontSize="18" fontWeight="700" fill="var(--text-primary)">{total}</text>
+      <text x={cx} y={cy + 14} textAnchor="middle" fontSize="9" fill="var(--text-muted)">violations</text>
     </svg>
   );
 }
 
-/* ═══════════════════════════════════════
-   VIOLATIONS
-═══════════════════════════════════════ */
 function ViolationsSection() {
   const [search, setSearch] = useState("");
   const [ppe, setPpe] = useState("all");
@@ -783,34 +634,17 @@ function ViolationsSection() {
 
   return (
     <>
-      <p className="section-subtitle" style={{ marginBottom: 20 }}>
-        All recorded PPE non-compliance events with filtering and export.
-      </p>
-
+      <p className="section-subtitle" style={{ marginBottom: 20 }}>All recorded PPE non-compliance events with filtering and export.</p>
       <div className="violations-summary-row">
-        <div className="vsummary-pill vsummary-critical">
-          <span className="vsummary-num">14</span>
-          <span>Critical</span>
-        </div>
-        <div className="vsummary-pill vsummary-high">
-          <span className="vsummary-num">6</span>
-          <span>High</span>
-        </div>
-        <div className="vsummary-pill vsummary-medium">
-          <span className="vsummary-num">4</span>
-          <span>Medium</span>
-        </div>
+        <div className="vsummary-pill vsummary-critical"><span className="vsummary-num">14</span><span>Critical</span></div>
+        <div className="vsummary-pill vsummary-high"><span className="vsummary-num">6</span><span>High</span></div>
+        <div className="vsummary-pill vsummary-medium"><span className="vsummary-num">4</span><span>Medium</span></div>
         <div style={{ flex: 1 }} />
         <button className="btn btn-outline" onClick={() => alert("Exported violations_audit.csv")}>
-          <Ico>
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </Ico>
+          <Ico><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></Ico>
           Export CSV
         </button>
       </div>
-
       <div className="card db-card">
         <div className="db-filters">
           <div className="filter-row">
@@ -831,61 +665,32 @@ function ViolationsSection() {
             </div>
             <div className="filter-group">
               <label>Date range</label>
-              <div className="date-range">
-                <input type="date" />
-                <input type="date" />
-              </div>
+              <div className="date-range"><input type="date" /><input type="date" /></div>
             </div>
           </div>
         </div>
         <div className="table-container">
           <table className="data-table">
             <thead>
-              <tr>
-                <th>Audit ID</th>
-                <th>Personnel</th>
-                <th>Track</th>
-                <th>Violation</th>
-                <th>Timestamp</th>
-                <th>Confidence</th>
-                <th>Severity</th>
-                <th></th>
-              </tr>
+              <tr><th>Audit ID</th><th>Personnel</th><th>Track</th><th>Violation</th><th>Timestamp</th><th>Confidence</th><th>Severity</th><th></th></tr>
             </thead>
             <tbody>
               {filtered.map((v) => (
                 <tr key={v.id}>
-                  <td>
-                    <strong>{v.id}</strong>
-                  </td>
+                  <td><strong>{v.id}</strong></td>
                   <td>{v.name}</td>
+                  <td><span style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--text-muted)" }}>#{v.trackId}</span></td>
                   <td>
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--text-muted)" }}>#{v.trackId}</span>
-                  </td>
-                  <td>
-                    <span
-                      className="violation-pill"
-                      style={{
-                        background: v.status === "Critical" ? "var(--danger-soft)" : v.status === "High" ? "var(--warning-soft)" : "var(--primary-soft)",
-                        color: v.status === "Critical" ? "var(--danger)" : v.status === "High" ? "var(--warning)" : "var(--primary)",
-                      }}
-                    >
+                    <span className="violation-pill" style={{ background: v.status === "Critical" ? "var(--danger-soft)" : v.status === "High" ? "var(--warning-soft)" : "var(--primary-soft)", color: v.status === "Critical" ? "var(--danger)" : v.status === "High" ? "var(--warning)" : "var(--primary)" }}>
                       {formatViol(v.violation)}
                     </span>
                   </td>
                   <td style={{ color: "var(--text-muted)", fontSize: "0.82rem" }}>{v.timestamp}</td>
-                  <td>
-                    <strong>{v.confidence}</strong>
-                  </td>
-                  <td>
-                    <span className={`status ${statusClass(v.status)}`}>{v.status}</span>
-                  </td>
+                  <td><strong>{v.confidence}</strong></td>
+                  <td><span className={`status ${statusClass(v.status)}`}>{v.status}</span></td>
                   <td>
                     <button className="btn btn-ghost" onClick={() => setActive(v)} title="View snapshot">
-                      <Ico>
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </Ico>
+                      <Ico><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></Ico>
                     </button>
                   </td>
                 </tr>
@@ -894,30 +699,19 @@ function ViolationsSection() {
           </table>
         </div>
         <div className="table-footer">
-          <span>
-            Showing {filtered.length} of {dummyViolations.length} records
-          </span>
+          <span>Showing {filtered.length} of {dummyViolations.length} records</span>
           <div className="pagination">
-            <button className="btn btn-outline" disabled>
-              Previous
-            </button>
+            <button className="btn btn-outline" disabled>Previous</button>
             <button className="btn btn-outline">Next</button>
           </div>
         </div>
       </div>
-
       {active && (
         <div className="modal-overlay active" onClick={() => setActive(null)}>
           <div className="modal-content" style={{ maxWidth: 720 }} onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setActive(null)} aria-label="Close">
-              <Ico>
-                <path d="M18 6L6 18M6 6l12 12" />
-              </Ico>
-            </button>
+            <button className="modal-close" onClick={() => setActive(null)} aria-label="Close"><Ico><path d="M18 6L6 18M6 6l12 12" /></Ico></button>
             <img src={heroImg} alt="" />
-            <div className="modal-caption">
-              {active.id} · {active.name} · Track #{active.trackId} · {formatViol(active.violation)} · Confidence {active.confidence}
-            </div>
+            <div className="modal-caption">{active.id} · {active.name} · Track #{active.trackId} · {formatViol(active.violation)} · Confidence {active.confidence}</div>
           </div>
         </div>
       )}
@@ -925,23 +719,14 @@ function ViolationsSection() {
   );
 }
 
-/* ═══════════════════════════════════════
-   REPORTS
-═══════════════════════════════════════ */
 function ReportsSection() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const generate = () => {
-    setOpen(true);
-    setLoading(true);
-    setTimeout(() => setLoading(false), 1600);
-  };
+  const generate = () => { setOpen(true); setLoading(true); setTimeout(() => setLoading(false), 1600); };
 
   return (
     <>
-      <p className="section-subtitle" style={{ marginBottom: 28 }}>
-        Generate detailed compliance audit reports for supervisors and safety stakeholders.
-      </p>
+      <p className="section-subtitle" style={{ marginBottom: 28 }}>Generate detailed compliance audit reports for supervisors and safety stakeholders.</p>
       <div className="reports-layout">
         <div className="report-left">
           <div className="report-meta-card">
@@ -954,48 +739,23 @@ function ReportsSection() {
               </svg>
               <h2>Compliance Audit Report</h2>
             </div>
-            <p className="rmc-desc">
-              A full analysis of PPE compliance across all monitored zones, including violation patterns, high-risk individuals, and actionable recommendations.
-            </p>
+            <p className="rmc-desc">A full analysis of PPE compliance across all monitored zones, including violation patterns, high-risk individuals, and actionable recommendations.</p>
             <div className="rmc-stats">
-              <div className="rmc-stat">
-                <span className="rmc-stat-val">24</span>
-                <span className="rmc-stat-lbl">Violations</span>
-              </div>
-              <div className="rmc-stat">
-                <span className="rmc-stat-val">4</span>
-                <span className="rmc-stat-lbl">Personnel flagged</span>
-              </div>
-              <div className="rmc-stat">
-                <span className="rmc-stat-val">87.5%</span>
-                <span className="rmc-stat-lbl">Compliance</span>
-              </div>
-              <div className="rmc-stat">
-                <span className="rmc-stat-val">13 days</span>
-                <span className="rmc-stat-lbl">Period</span>
-              </div>
+              <div className="rmc-stat"><span className="rmc-stat-val">24</span><span className="rmc-stat-lbl">Violations</span></div>
+              <div className="rmc-stat"><span className="rmc-stat-val">4</span><span className="rmc-stat-lbl">Personnel flagged</span></div>
+              <div className="rmc-stat"><span className="rmc-stat-val">87.5%</span><span className="rmc-stat-lbl">Compliance</span></div>
+              <div className="rmc-stat"><span className="rmc-stat-val">13 days</span><span className="rmc-stat-lbl">Period</span></div>
             </div>
             <div className="rmc-period">
-              <Ico>
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </Ico>
-              <span>
-                Period: <strong>May 1 – May 13, 2026</strong>
-              </span>
+              <Ico><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></Ico>
+              <span>Period: <strong>May 1 – May 13, 2026</strong></span>
             </div>
             <button className="btn btn-primary btn-block" style={{ marginTop: 24 }} onClick={generate}>
-              <Ico>
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6" />
-              </Ico>
+              <Ico><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /></Ico>
               Generate compliance audit
             </button>
           </div>
         </div>
-
         <div className="report-right">
           <div className="report-history-card">
             <h3 className="report-history-title">Previous Reports</h3>
@@ -1012,33 +772,22 @@ function ReportsSection() {
                 </div>
                 <div className="rhi-right">
                   <span className="rhi-rate">{r.rate}</span>
-                  <button className="btn btn-ghost" style={{ padding: "4px 10px", fontSize: "0.75rem" }} onClick={() => alert(`Downloading ${r.date} report`)}>
-                    Download
-                  </button>
+                  <button className="btn btn-ghost" style={{ padding: "4px 10px", fontSize: "0.75rem" }} onClick={() => alert(`Downloading ${r.date} report`)}>Download</button>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-
       {open && (
         <div className="modal-overlay active" onClick={() => setOpen(false)}>
           <div className="modal-content report-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setOpen(false)} aria-label="Close">
-              <Ico>
-                <path d="M18 6L6 18M6 6l12 12" />
-              </Ico>
-            </button>
+            <button className="modal-close" onClick={() => setOpen(false)} aria-label="Close"><Ico><path d="M18 6L6 18M6 6l12 12" /></Ico></button>
             {loading ? (
               <div className="loading-state">
                 <div className="spinner-lg" />
-                <p>
-                  <strong>Analyzing compliance data…</strong>
-                </p>
-                <p style={{ marginTop: 6, fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                  Processing 24 events across 4 personnel
-                </p>
+                <p><strong>Analyzing compliance data…</strong></p>
+                <p style={{ marginTop: 6, fontSize: "0.8rem", color: "var(--text-muted)" }}>Processing 24 events across 4 personnel</p>
               </div>
             ) : (
               <ReportPDF />
@@ -1063,57 +812,22 @@ function ReportPDF() {
       </div>
       <div className="report-section">
         <h2>Executive Summary</h2>
-        <p>
-          This report covers PPE compliance from <strong>May 1–13, 2026</strong>. Automated monitoring recorded <strong>24 violations</strong> across{" "}
-          <strong>4 personnel</strong> in two active zones. Site-wide compliance averaged <strong>87.5%</strong>, with helmet non-compliance as the leading
-          category.
-        </p>
+        <p>This report covers PPE compliance from <strong>May 1–13, 2026</strong>. Automated monitoring recorded <strong>24 violations</strong> across <strong>4 personnel</strong> in two active zones. Site-wide compliance averaged <strong>87.5%</strong>, with helmet non-compliance as the leading category.</p>
       </div>
       <div className="report-section">
         <h2>Violation Breakdown</h2>
         <table className="report-table">
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>Count</th>
-              <th>Share</th>
-              <th>Severity</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Category</th><th>Count</th><th>Share</th><th>Severity</th></tr></thead>
           <tbody>
-            <tr>
-              <td>No Helmet</td>
-              <td>14</td>
-              <td>58%</td>
-              <td>
-                <span className="status status-danger">Critical</span>
-              </td>
-            </tr>
-            <tr>
-              <td>No Goggles</td>
-              <td>6</td>
-              <td>25%</td>
-              <td>
-                <span className="status status-warning">High</span>
-              </td>
-            </tr>
-            <tr>
-              <td>No Gloves</td>
-              <td>4</td>
-              <td>17%</td>
-              <td>
-                <span className="status status-info">Medium</span>
-              </td>
-            </tr>
+            <tr><td>No Helmet</td><td>14</td><td>58%</td><td><span className="status status-danger">Critical</span></td></tr>
+            <tr><td>No Goggles</td><td>6</td><td>25%</td><td><span className="status status-warning">High</span></td></tr>
+            <tr><td>No Gloves</td><td>4</td><td>17%</td><td><span className="status status-info">Medium</span></td></tr>
           </tbody>
         </table>
       </div>
       <div className="report-section">
         <h2>High-Risk Personnel</h2>
-        <p>
-          <strong>Track #1 (Fatima Khan)</strong> accounts for <strong>14 violations (58%)</strong> of all incidents. Pattern shows consistent helmet
-          non-compliance during morning shifts in Zone A. Immediate supervisory review and PPE re-certification are recommended per Safety Protocol Rev 4.0.
-        </p>
+        <p><strong>Track #1 (Fatima Khan)</strong> accounts for <strong>14 violations (58%)</strong> of all incidents. Pattern shows consistent helmet non-compliance during morning shifts in Zone A. Immediate supervisory review and PPE re-certification are recommended per Safety Protocol Rev 4.0.</p>
       </div>
       <div className="report-section">
         <h2>Recommendations</h2>
@@ -1127,18 +841,11 @@ function ReportPDF() {
       </div>
       <div className="report-actions">
         <button className="btn btn-primary" onClick={() => alert("PDF download initiated")}>
-          <Ico>
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </Ico>
+          <Ico><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></Ico>
           Download PDF
         </button>
         <button className="btn btn-outline" onClick={() => alert("Report sent to stakeholders")}>
-          <Ico>
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-            <polyline points="22,6 12,13 2,6" />
-          </Ico>
+          <Ico><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></Ico>
           Email to stakeholders
         </button>
       </div>
@@ -1146,65 +853,37 @@ function ReportPDF() {
   );
 }
 
-/* ═══════════════════════════════════════
-   SETTINGS
-═══════════════════════════════════════ */
 function SettingsSection() {
   const [conf, setConf] = useState(45);
   const [iou, setIou] = useState(50);
   const [votes, setVotes] = useState(8);
   return (
     <>
-      <p className="section-subtitle" style={{ marginBottom: 28 }}>
-        Adjust detection sensitivity and monitoring parameters for the camera system.
-      </p>
+      <p className="section-subtitle" style={{ marginBottom: 28 }}>Adjust detection sensitivity and monitoring parameters for the camera system.</p>
       <div className="card settings-card">
         <div className="settings-grid">
           <div className="form-group">
             <label>Confidence threshold</label>
             <input type="range" min={0} max={100} value={conf} onChange={(e) => setConf(Number(e.target.value))} />
-            <div className="range-display">
-              <span>
-                Current: <strong>{conf}%</strong>
-              </span>
-              <span>Recommended: 40–60%</span>
-            </div>
-            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: 6 }}>
-              Higher values reduce false alarms but may miss borderline violations.
-            </p>
+            <div className="range-display"><span>Current: <strong>{conf}%</strong></span><span>Recommended: 40–60%</span></div>
+            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: 6 }}>Higher values reduce false alarms but may miss borderline violations.</p>
           </div>
           <div className="form-group">
             <label>Tracking overlap (IoU)</label>
             <input type="range" min={0} max={100} value={iou} onChange={(e) => setIou(Number(e.target.value))} />
-            <div className="range-display">
-              <span>
-                Current: <strong>{(iou / 100).toFixed(2)}</strong>
-              </span>
-              <span>Recommended: 0.45–0.55</span>
-            </div>
-            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: 6 }}>
-              Controls how closely tracked people must overlap between frames.
-            </p>
+            <div className="range-display"><span>Current: <strong>{(iou / 100).toFixed(2)}</strong></span><span>Recommended: 0.45–0.55</span></div>
+            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: 6 }}>Controls how closely tracked people must overlap between frames.</p>
           </div>
           <div className="form-group">
             <label>Vote-buffer consensus (frames)</label>
             <input type="range" min={1} max={30} value={votes} onChange={(e) => setVotes(Number(e.target.value))} />
-            <div className="range-display">
-              <span>
-                Current: <strong>{votes} / 15 frames</strong>
-              </span>
-              <span>Recommended: 6–10</span>
-            </div>
-            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: 6 }}>
-              How many consecutive frames must agree before a violation is confirmed.
-            </p>
+            <div className="range-display"><span>Current: <strong>{votes} / 15 frames</strong></span><span>Recommended: 6–10</span></div>
+            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: 6 }}>How many consecutive frames must agree before a violation is confirmed.</p>
           </div>
         </div>
         <hr className="settings-divider" />
         <button className="btn btn-primary" onClick={() => alert("Configuration saved successfully")}>
-          <Ico>
-            <path d="M20 6L9 17l-5-5" />
-          </Ico>
+          <Ico><path d="M20 6L9 17l-5-5" /></Ico>
           Save configuration
         </button>
       </div>
