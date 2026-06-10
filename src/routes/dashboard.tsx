@@ -7,6 +7,7 @@ const heroImg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 interface SafeguardUser {
   loggedIn: boolean;
   name: string;
+  email?: string;
   role: string;
 }
 
@@ -100,6 +101,7 @@ function DashboardPage() {
   const [section, setSection] = useState<Section>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     const u = getUser();
@@ -203,7 +205,7 @@ function DashboardPage() {
               </svg>
             </div>
             <div className={`user-dropdown${userMenu ? " active" : ""}`} style={{ background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: "6px", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}>
-              <a role="button">
+              <a role="button" onClick={() => { setProfileOpen(true); setUserMenu(false); }}>
                 <Ico>
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
@@ -246,6 +248,38 @@ function DashboardPage() {
           </section>
         </div>
       </main>
+
+      {/* PROFILE MODAL */}
+      {profileOpen && (
+        <div className="modal-overlay active" onClick={() => setProfileOpen(false)}>
+          <div className="modal-content" style={{ maxWidth: 440, width: "100%", padding: 36 }} onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setProfileOpen(false)} aria-label="Close">
+              <Ico><path d="M18 6L6 18M6 6l12 12" /></Ico>
+            </button>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginBottom: 28 }}>
+              <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#1e3a5f", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", fontWeight: 700, letterSpacing: "0.02em" }}>
+                {initials}
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <h2 style={{ margin: "0 0 4px", fontSize: "1.1rem", fontWeight: 700 }}>{user.name}</h2>
+                <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 500 }}>{user.role}</span>
+              </div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                { label: "Email", value: user.email ?? "—" },
+                { label: "Role", value: user.role },
+                { label: "Status", value: "Active" },
+              ].map((row) => (
+                <div key={row.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "var(--bg-app, #f3f4f6)", borderRadius: 6, border: "1px solid var(--border, #e5e7eb)" }}>
+                  <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>{row.label}</span>
+                  <span style={{ fontSize: "0.85rem", color: "var(--text-primary)", fontWeight: 600 }}>{row.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -361,24 +395,14 @@ function OverviewSection({ goAnalytics, goReports }: { goAnalytics: () => void; 
               </button>
             </div>
           </div>
-          <div className="camera-display">
-            <div className="camera-frame">
-              <div className="camera-overlay-ui">
-                <div className="cam-label">CAM 01</div>
-                <div className="cam-timestamp">{new Date().toLocaleTimeString()}</div>
-              </div>
-              <div className="detection-box green" style={{ top: "22%", left: "18%", width: "22%", height: "55%" }}>
-                <span className="det-label">Track #36 · Compliant</span>
-              </div>
-              <div className="detection-box red" style={{ top: "30%", left: "55%", width: "20%", height: "50%" }}>
-                <span className="det-label">Track #25 · No Helmet</span>
-              </div>
-              <div className="cam-scoreboard">
-                <div className="sb-title">Active violations</div>
-                <div className="sb-row"><span>No Helmet</span><span className="sb-count">14</span></div>
-                <div className="sb-row"><span>No Goggles</span><span className="sb-count">6</span></div>
-                <div className="sb-row"><span>No Gloves</span><span className="sb-count">4</span></div>
-              </div>
+          <div className="camera-display" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 380, background: "#f3f4f6", borderRadius: "0 0 7px 7px" }}>
+            <div style={{ textAlign: "center", color: "#9ca3af" }}>
+              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth={1.25} strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 14 }}>
+                <path d="M23 7l-7 5 7 5V7z" />
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+              </svg>
+              <p style={{ fontSize: "0.875rem", fontWeight: 600, color: "#6b7280", margin: "0 0 4px" }}>No camera connected</p>
+              <p style={{ fontSize: "0.78rem", color: "#9ca3af", margin: 0 }}>Click Connect to add a camera feed</p>
             </div>
           </div>
         </div>
