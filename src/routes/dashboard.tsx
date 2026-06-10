@@ -310,7 +310,7 @@ function NavItem({ active, onClick, label, icon }: { active: boolean; onClick: (
 }
 
 function NotifItem({ unread, variant, title, body, time }: { unread?: boolean; variant: "danger" | "warning" | "info"; title: string; body: string; time: string }) {
-  const s = variant === "warning" ? { background: "var(--warning-soft)", color: "var(--warning)" } : variant === "info" ? { background: "var(--info-soft)", color: "var(--info)" } : undefined;
+  const s = variant === "warning" ? { background: "#f0f4f8", color: "#2c5aa0" } : variant === "info" ? { background: "#f0f4f8", color: "#1e3a5f" } : { background: "#fef2f2", color: "#c41e3a" };
   return (
     <div className={`notif-item${unread ? " unread" : ""}`}>
       <div className="notif-icon" style={s}>
@@ -418,9 +418,9 @@ function OverviewSection({ goAnalytics, goReports }: { goAnalytics: () => void; 
                   <span className="live-dot" />
                   <span style={{ fontSize: "0.72rem", fontWeight: 600, color: "var(--danger)" }}>Recording</span>
                 </span>
-                <span>              </span>
+                <span>        fps</span>
               </div>
-              <button className="btn btn-primary" style={{ whiteSpace: "nowrap", padding: "8px 16px" }} onClick={() => alert("Opening camera connection dialog...")}>
+              <button className="btn" style={{ whiteSpace: "nowrap", padding: "8px 16px", background: "#1e3a5f", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }} onClick={() => alert("Opening camera connection dialog...")}>
                 <svg className="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6 }}>
                   <path d="M12 5v14" />
                   <path d="M19 12H5" />
@@ -487,11 +487,11 @@ function OverviewSection({ goAnalytics, goReports }: { goAnalytics: () => void; 
 
 function ActivityItem({ event }: { event: ActivityEvent }) {
   const cfg: Record<ActivityEvent["severity"], { dot: string; label: string; bg: string }> = {
-    critical: { dot: "#DC2626", label: "Violation", bg: "#FEF2F2" },
-    high: { dot: "#D97706", label: "Alert", bg: "#FFFBEB" },
-    medium: { dot: "#F59E0B", label: "Warning", bg: "#FFFBEB" },
-    ok: { dot: "#2563EB", label: "Compliant", bg: "#EFF6FF" },
-    info: { dot: "#0EA5E9", label: "Info", bg: "#E0F2FE" },
+    critical: { dot: "#c41e3a", label: "Violation", bg: "#fef2f2" },
+    high: { dot: "#2c5aa0", label: "Alert", bg: "#eff6ff" },
+    medium: { dot: "#1e3a5f", label: "Warning", bg: "#f0f4f8" },
+    ok: { dot: "#059669", label: "Compliant", bg: "#f0fdf4" },
+    info: { dot: "#1e3a5f", label: "Info", bg: "#f0f4f8" },
   };
   const c = cfg[event.severity];
   return (
