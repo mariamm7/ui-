@@ -523,7 +523,6 @@ select.form-input {
 .sidebar-logo img {
   width: 26px;
   height: 26px;
-  filter: brightness(0) invert(1);
 }
 
 .sidebar-logo span {
