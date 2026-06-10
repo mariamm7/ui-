@@ -5,7 +5,7 @@ import hero from "@/assets/login-hero.png";
 
 interface Props {
   children: ReactNode;
-  heroBadge: ReactNode;
+  heroBadge?: ReactNode;  // add the ?
   heroTitle: string;
   heroText: string;
   stats: { value: string; label: string }[];
@@ -25,7 +25,7 @@ export function AuthLayout({ children, heroBadge, heroTitle, heroText, stats }: 
         <img src={hero} alt="" className="hero-img" />
         <div className="hero-overlay">
           <div className="hero-content">
-            <div className="hero-badge">{heroBadge}</div>
+            {heroBadge && <div className="hero-badge">{heroBadge}</div>}
             <h1>{heroTitle}</h1>
             <p>{heroText}</p>
             <div className="hero-stats">
