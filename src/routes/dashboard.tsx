@@ -269,7 +269,7 @@ function DashboardPage() {
               {[
                 { label: "Email", value: user.email ?? "—" },
                 { label: "Role", value: user.role },
-                { label: "Status", value: "Active" },
+                { label: "Status", value: "Active", isStatus: true },
               ].map((row) => (
   <div
     key={row.label}
